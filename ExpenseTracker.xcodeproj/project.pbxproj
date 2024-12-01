@@ -11,6 +11,11 @@
 		5B208A0D2CCC8E020064028E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B208A0C2CCC8E020064028E /* ContentView.swift */; };
 		5B208A0F2CCC8E030064028E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B208A0E2CCC8E030064028E /* Assets.xcassets */; };
 		5B208A122CCC8E030064028E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B208A112CCC8E030064028E /* Preview Assets.xcassets */; };
+		5B208A192CCC9CA60064028E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B208A182CCC9CA60064028E /* Constants.swift */; };
+		5B8781882CFC26A3001B041B /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8781872CFC26A3001B041B /* Transaction.swift */; };
+		5B87818A2CFC26CE001B041B /* ExpenseClassification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8781892CFC26CE001B041B /* ExpenseClassification.swift */; };
+		5B87818C2CFC26D8001B041B /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B87818B2CFC26D8001B041B /* Account.swift */; };
+		5B87818E2CFC2741001B041B /* PieSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B87818D2CFC2741001B041B /* PieSlice.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +24,11 @@
 		5B208A0C2CCC8E020064028E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5B208A0E2CCC8E030064028E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5B208A112CCC8E030064028E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5B208A182CCC9CA60064028E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5B8781872CFC26A3001B041B /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		5B8781892CFC26CE001B041B /* ExpenseClassification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseClassification.swift; sourceTree = "<group>"; };
+		5B87818B2CFC26D8001B041B /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		5B87818D2CFC2741001B041B /* PieSlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSlice.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,10 +61,13 @@
 		5B208A092CCC8E020064028E /* ExpenseTracker */ = {
 			isa = PBXGroup;
 			children = (
+				5B8781862CFC268B001B041B /* Views */,
+				5B8781852CFC2680001B041B /* Models */,
 				5B208A0A2CCC8E020064028E /* ExpenseTrackerApp.swift */,
 				5B208A0C2CCC8E020064028E /* ContentView.swift */,
 				5B208A0E2CCC8E030064028E /* Assets.xcassets */,
 				5B208A102CCC8E030064028E /* Preview Content */,
+				5B208A182CCC9CA60064028E /* Constants.swift */,
 			);
 			path = ExpenseTracker;
 			sourceTree = "<group>";
@@ -65,6 +78,24 @@
 				5B208A112CCC8E030064028E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		5B8781852CFC2680001B041B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5B8781872CFC26A3001B041B /* Transaction.swift */,
+				5B8781892CFC26CE001B041B /* ExpenseClassification.swift */,
+				5B87818B2CFC26D8001B041B /* Account.swift */,
+				5B87818D2CFC2741001B041B /* PieSlice.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5B8781862CFC268B001B041B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,6 +170,11 @@
 			files = (
 				5B208A0D2CCC8E020064028E /* ContentView.swift in Sources */,
 				5B208A0B2CCC8E020064028E /* ExpenseTrackerApp.swift in Sources */,
+				5B8781882CFC26A3001B041B /* Transaction.swift in Sources */,
+				5B87818E2CFC2741001B041B /* PieSlice.swift in Sources */,
+				5B208A192CCC9CA60064028E /* Constants.swift in Sources */,
+				5B87818A2CFC26CE001B041B /* ExpenseClassification.swift in Sources */,
+				5B87818C2CFC26D8001B041B /* Account.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
