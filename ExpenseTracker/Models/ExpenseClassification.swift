@@ -13,5 +13,10 @@ struct ExpenseClassification {
 }
 
 enum ExpenseCategory: String, CaseIterable {
-    case food, entertainment, utilities, transportation, other
+    case food = "Food"
+    case entertainment = "Entertainment"
+    case utilities = "Utilities"
+    case transportation = "Transportation"
+    case other = "Other"
 }
+

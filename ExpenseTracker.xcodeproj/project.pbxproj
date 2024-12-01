@@ -67,7 +67,6 @@
 				5B208A0C2CCC8E020064028E /* ContentView.swift */,
 				5B208A0E2CCC8E030064028E /* Assets.xcassets */,
 				5B208A102CCC8E030064028E /* Preview Content */,
-				5B208A182CCC9CA60064028E /* Constants.swift */,
 			);
 			path = ExpenseTracker;
 			sourceTree = "<group>";
@@ -83,6 +82,7 @@
 		5B8781852CFC2680001B041B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5B208A182CCC9CA60064028E /* Constants.swift */,
 				5B8781872CFC26A3001B041B /* Transaction.swift */,
 				5B8781892CFC26CE001B041B /* ExpenseClassification.swift */,
 				5B87818B2CFC26D8001B041B /* Account.swift */,
