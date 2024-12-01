@@ -63,6 +63,7 @@ extension Date {
 struct AccountDetailView: View {
     @Binding var account: Account
     @State private var showExpenseChart = false
+    @State private var showAddTransactionForm = false
 
     var classifications: [ExpenseClassification] {
         account.transactions.filter { $0.date.isInCurrentMonth() }.map { transaction in
@@ -88,13 +89,24 @@ struct AccountDetailView: View {
             Text("Balance: \(String(format: "$%.2f", account.balance))")
                 .font(.headline)
                 .foregroundColor(account.balance >= 0 ? .green : .red)
-
-            Button(action: { showExpenseChart.toggle() }) { 
-                Image(systemName: "chart.pie")
-                    .padding()
-            }
-            .sheet(isPresented: $showExpenseChart) {
-                ExpenseChartView(classifications: classifications)
+            
+            HStack {
+                
+                Button(action: { showExpenseChart.toggle() }) {
+                    Image(systemName: "chart.pie")
+                        .padding()
+                }
+                .sheet(isPresented: $showExpenseChart) {
+                    ExpenseChartView(classifications: classifications)
+                }
+                Button(action: { showAddTransactionForm.toggle() }) {
+                    Image(systemName: "plus.circle")
+                        .padding()
+                }
+                .sheet(isPresented: $showAddTransactionForm) {
+                    AddTransactionForm(account: $account)
+                }
+                
             }
 
             List(account.transactions.filter { $0.date.isInCurrentMonth() }) { transaction in
@@ -109,6 +121,53 @@ struct AccountDetailView: View {
     }
 }
 
+// MARK: - Add Transaction Form View
+
+struct AddTransactionForm: View {
+    @Environment(\.dismiss) var dismiss
+    @Binding var account: Account
+
+    @State private var name: String = ""
+    @State private var amount: String = ""
+    @State private var date: Date = Date()
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Transaction Details")) {
+                    TextField("Name", text: $name)
+                    TextField("Amount", text: $amount)
+                        .keyboardType(.decimalPad)
+                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                }
+            }
+            .navigationTitle("Add Transaction")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveTransaction()
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func saveTransaction() {
+        guard let amountValue = Double(amount) else { return }
+        let newTransaction = Transaction(date: date, amount: amountValue, name: name)
+        account.transactions.append(newTransaction)
+        account.balance += amountValue
+    }
+}
+
+
+
 
 // MARK: - Expense Chart View
 
@@ -117,11 +176,7 @@ struct ExpenseChartView: View {
 
     var groupedExpenses: [ExpenseCategory: Double] {
         Dictionary(grouping: classifications, by: { $0.category })
-            .mapValues { $0.reduce(0) { $0 + $1.transaction.amount } }
-    }
-
-    private var totalExpenses: Double {
-        groupedExpenses.values.reduce(0, +)
+            .mapValues { $0.reduce(0) { $0 + abs($1.transaction.amount) } }
     }
 
     var body: some View {
@@ -130,71 +185,28 @@ struct ExpenseChartView: View {
                 .font(.headline)
                 .padding()
 
-            HStack {
-                GeometryReader { geometry in
-                    let radius = min(geometry.size.width, geometry.size.height) / 2
-                    ZStack {
-                        let angles = calculateAngles()
-                        ForEach(angles.indices, id: \.self) { index in
-                            let angle = angles[index]
-                            PieSlice(startAngle: angle.start, endAngle: angle.end)
-                                .fill(colorForCategory(angle.category))
-                                .overlay(
-                                    Text("\(angle.percentage, specifier: "%.1f")%")
-                                        .foregroundColor(.white)
-                                        .font(.caption)
-                                        .position(getLabelPosition(for: angle, radius: radius))
-                                )
-                            if angle.percentage < 5.0 {
-                                drawLine(from: getLabelPosition(for: angle, radius: radius), in: geometry.size)
-                                    .stroke(colorForCategory(angle.category), lineWidth: 1)
-                            }
-                        }
-                    }
+            Chart {
+                ForEach(groupedExpenses.sorted(by: { $0.key.rawValue < $1.key.rawValue }), id: \.key) { category, amount in
+                    BarMark(
+                        x: .value("Category", category.rawValue.capitalized),
+                        y: .value("Amount", amount)
+                    )
+                    .foregroundStyle(colorForCategory(category))
                 }
-                .aspectRatio(1, contentMode: .fit)
-                .padding()
+            }
+            .frame(height: 300)
+            .padding()
 
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(ExpenseCategory.allCases, id: \.self) { category in
-                        HStack {
-                            colorForCategory(category)
-                                .frame(width: 20, height: 20)
-                                .cornerRadius(4)
-                            Text(category.rawValue.capitalized)
-                        }
-                    }
+            List(groupedExpenses.sorted(by: { $0.key.rawValue < $1.key.rawValue }), id: \.key) { category, amount in
+                HStack {
+                    Text(category.rawValue.capitalized)
+                    Spacer()
+                    Text(String(format: "$%.2f", amount))
+                        .foregroundColor(colorForCategory(category))
                 }
-                .padding(.leading)
             }
         }
         .padding()
-    }
-
-    private func calculateAngles() -> [(start: Angle, end: Angle, category: ExpenseCategory, amount: Double, percentage: Double)] {
-        var angles: [(Angle, Angle, ExpenseCategory, Double, Double)] = []
-        var startAngle = Angle.degrees(0)
-        for (category, amount) in groupedExpenses {
-            let percentage = (amount / totalExpenses) * 100
-            let endAngle = startAngle + Angle.degrees(360 * (amount / totalExpenses))
-            angles.append((start: startAngle, end: endAngle, category: category, amount: amount, percentage: percentage))
-            startAngle = endAngle
-        }
-        return angles
-    }
-
-    private func getLabelPosition(for angleData: (start: Angle, end: Angle, category: ExpenseCategory, amount: Double, percentage: Double), radius: CGFloat) -> CGPoint {
-        let midAngle = (angleData.start + angleData.end).radians / 2
-        let xOffset = cos(midAngle) * radius * 0.6
-        let yOffset = sin(midAngle) * radius * 0.6
-        return CGPoint(x: radius + xOffset, y: radius + yOffset)
-    }
-
-    private func drawLine(from point: CGPoint, in size: CGSize) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: size.width / 2, y: size.height / 2))
-        path.addLine(to: point)
-        return path
     }
 
     private func colorForCategory(_ category: ExpenseCategory) -> Color {
