@@ -53,19 +53,29 @@ struct AccountDetailView: View {
     @State private var showAddTransactionForm = false
 
     var classifications: [ExpenseClassification] {
-        account.transactions.filter { $0.date.isInCurrentMonth() }.map { transaction in
-            let category: ExpenseCategory = {
-                switch transaction.name.lowercased() {
-                case "groceries": return .food
-                case "cinema": return .entertainment
-                case "electricity bill": return .utilities
-                case "fuel": return .transportation
-                default: return .other
-                }
-            }()
+        let categoryKeywords: [ExpenseCategory: [String]] = [
+            .food: ["grocery", "restaurant", "food", "snack", "meal", "café", "takeout", "groceries"],
+            .entertainment: ["movie", "concert", "theater", "sports", "amusement"],
+            .health: ["doctor", "pharmacy", "health", "medicine", "hospital", "clinic"],
+            .housing: ["rent", "mortgage"],
+            .income: ["salary", "income", "wages", "bonus", "royalty",],
+            .investments: ["stocks", "investment", "bonds", "mutual funds"],
+            .savings: ["savings", "deposits", "interest", "bonds", "mutual"],
+            .shopping: ["shopping", "retail", "online", "marketplace"],
+            .transfers: ["transfer", "send", "deposit", "withdrawal"],
+            .utilities: ["electricity", "water", "bill"],
+            .other: [] // Default category
+        ]
+
+        return account.transactions.filter { $0.date.isInCurrentMonth() }.map { transaction in
+            let normalizedName = transaction.name.lowercased()
+            let category: ExpenseCategory = categoryKeywords.first { (category, keywords) in
+                keywords.contains(where: { normalizedName.contains($0) })
+            }?.key ?? .other
             return ExpenseClassification(transaction: transaction, category: category)
         }
     }
+
 
     var body: some View {
         VStack {
@@ -163,7 +173,8 @@ struct ExpenseChartView: View {
 
     var groupedExpenses: [ExpenseCategory: Double] {
         Dictionary(grouping: classifications, by: { $0.category })
-            .mapValues { $0.reduce(0) { $0 + abs($1.transaction.amount) } }
+            .mapValues { $0.reduce(0) { $0 + $1.transaction.amount } }
+            .filter { $0.value != 0 }
     }
 
     var body: some View {
@@ -178,7 +189,7 @@ struct ExpenseChartView: View {
                         x: .value("Category", category.rawValue.capitalized),
                         y: .value("Amount", amount)
                     )
-                    .foregroundStyle(colorForCategory(category))
+                    .foregroundStyle(amount < 0 ? .red : (amount > 0 ? .green : .black))
                 }
             }
             .frame(height: 300)
@@ -189,22 +200,22 @@ struct ExpenseChartView: View {
                     Text(category.rawValue.capitalized)
                     Spacer()
                     Text(String(format: "$%.2f", amount))
-                        .foregroundColor(colorForCategory(category))
+                        // .foregroundColor(colorForCategory(category))
                 }
             }
         }
         .padding()
     }
 
-    private func colorForCategory(_ category: ExpenseCategory) -> Color {
-        switch category {
-        case .food: return .green
-        case .entertainment: return .blue
-        case .utilities: return .orange
-        case .transportation: return .purple
-        case .other: return .gray
-        }
-    }
+//    private func colorForCategory(_ category: ExpenseCategory) -> Color {
+//        switch category {
+//        case .food: return .green
+//        case .entertainment: return .blue
+//        case .utilities: return .orange
+//        case .transportation: return .purple
+//        case .other: return .gray
+//        }
+//    }
 }
 
 #Preview {

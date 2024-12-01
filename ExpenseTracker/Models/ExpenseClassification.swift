@@ -12,11 +12,21 @@ struct ExpenseClassification {
     let category: ExpenseCategory
 }
 
-enum ExpenseCategory: String, CaseIterable {
-    case food = "Food"
-    case entertainment = "Entertainment"
-    case utilities = "Utilities"
-    case transportation = "Transportation"
-    case other = "Other"
+enum ExpenseCategory: String, CaseIterable, Comparable {
+    case food
+    case entertainment
+    case health
+    case housing
+    case income
+    case investments
+    case savings
+    case utilities
+    case shopping
+    case transfers
+    case other
+    
+    static func < (lhs: ExpenseCategory, rhs: ExpenseCategory) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
 }
 
