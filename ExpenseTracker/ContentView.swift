@@ -47,19 +47,6 @@ struct HomeView: View {
 
 // MARK: - Account Detail View
 
-extension Date {
-    func isInCurrentMonth() -> Bool {
-        let calendar = Calendar.current
-        let currentMonth = calendar.component(.month, from: Date())
-        let currentYear = calendar.component(.year, from: Date())
-        
-        let transactionMonth = calendar.component(.month, from: self)
-        let transactionYear = calendar.component(.year, from: self)
-        
-        return transactionMonth == currentMonth && transactionYear == currentYear
-    }
-}
-
 struct AccountDetailView: View {
     @Binding var account: Account
     @State private var showExpenseChart = false
