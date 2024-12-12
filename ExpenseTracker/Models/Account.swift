@@ -9,6 +9,9 @@ import Foundation
 
 struct Account {
     let name: String
-    var balance: Double
     var transactions: [Transaction]
+    
+    var balance: Double {
+        transactions.reduce(0) { $0 + $1.amount }
+    }
 }
