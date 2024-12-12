@@ -73,7 +73,6 @@
 				5B8781862CFC268B001B041B /* Views */,
 				5B8781852CFC2680001B041B /* Models */,
 				5B208A0A2CCC8E020064028E /* ExpenseTrackerApp.swift */,
-				5B208A0C2CCC8E020064028E /* HomeView.swift */,
 				5B208A0E2CCC8E030064028E /* Assets.xcassets */,
 				5B208A102CCC8E030064028E /* Preview Content */,
 			);
@@ -111,6 +110,7 @@
 		5B8781862CFC268B001B041B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5B208A0C2CCC8E020064028E /* HomeView.swift */,
 				5B94E7F12D0B2D1200059150 /* AccountDetailView.swift */,
 				5B94E7F32D0B2D2800059150 /* AddTransactionForm.swift */,
 				5B94E7F52D0B2D3B00059150 /* ExpenseChartView.swift */,
